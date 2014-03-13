@@ -109,6 +109,8 @@ typedef NS_ENUM(NSUInteger, iCarouselOption)
 @property (nonatomic, assign, getter = isScrollEnabled) BOOL scrollEnabled;
 @property (nonatomic, assign, getter = isPagingEnabled) BOOL pagingEnabled;
 @property (nonatomic, assign, getter = isVertical) BOOL vertical;
+@property (nonatomic, readonly, getter = isSwipingToClose) BOOL swipingToClose;
+@property (nonatomic, assign, getter = isSwipeToCloseEnabled) BOOL swipeToCloseEnabled;
 @property (nonatomic, readonly, getter = isWrapEnabled) BOOL wrapEnabled;
 @property (nonatomic, assign) BOOL bounces;
 @property (nonatomic, assign) CGFloat scrollOffset;
@@ -182,6 +184,8 @@ typedef NS_ENUM(NSUInteger, iCarouselOption)
 
 - (BOOL)carousel:(iCarousel *)carousel shouldSelectItemAtIndex:(NSInteger)index;
 - (void)carousel:(iCarousel *)carousel didSelectItemAtIndex:(NSInteger)index;
+- (BOOL)carousel:(iCarousel *)carousel shouldRemoveItemAtIndex:(NSInteger)index;
+- (void)carousel:(iCarousel *)carousel didRemoveItemAtIndex:(NSInteger)index;
 
 - (CGFloat)carouselItemWidth:(iCarousel *)carousel;
 - (CATransform3D)carousel:(iCarousel *)carousel itemTransformForOffset:(CGFloat)offset baseTransform:(CATransform3D)transform;
