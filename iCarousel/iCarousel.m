@@ -2091,8 +2091,9 @@ NSComparisonResult compareViewDepth(UIView *view1, UIView *view2, iCarousel *sel
             _swipingToClose = NO;
             if (shouldClose && [self.delegate carousel:self shouldRemoveItemAtIndex:self.currentItemIndex])
             {
-                [self removeItemAtIndex:self.currentItemIndex animated:YES];
-                [self.delegate carousel:self didRemoveItemAtIndex:self.currentItemIndex];
+                NSInteger i = self.currentItemIndex;
+                [self removeItemAtIndex:i animated:YES];
+                [self.delegate carousel:self didRemoveItemAtIndex:i];
             }
             break;
         }
