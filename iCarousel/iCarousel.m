@@ -2079,13 +2079,26 @@ NSComparisonResult compareViewDepth(UIView *view1, UIView *view2, iCarousel *sel
         {
             CGRect frame = self.currentItemView.frame;
             BOOL shouldClose = NO;
-            if (fabsf(_vertical? frame.origin.x: frame.origin.y) > frame.size.height)
-                shouldClose = YES;
+            CGFloat threshhold;
+            if (_vertical)
+            {
+                threshhold = fabsf(frame.origin.x) + (self.currentItemView.superview.frame.size.width / 2.0);
+            }
+            else
+            {
+                threshhold = fabsf(frame.origin.y) + (self.currentItemView.superview.frame.size.height / 2.0);
+            }
+            // Default transition, return to home.
             if (_vertical)
                 frame.origin.x = 0;
             else
                 frame.origin.y = 0;
-            [UIView animateWithDuration:0.5 animations:^{
+            // Closing.
+            if (threshhold > frame.size.height)
+            {
+                shouldClose = YES;
+            }
+            [UIView animateWithDuration:1.0 animations:^{
                 self.currentItemView.frame = frame;
             }];
             _swipingToClose = NO;
@@ -2103,23 +2116,20 @@ NSComparisonResult compareViewDepth(UIView *view1, UIView *view2, iCarousel *sel
         }
         default:
         {
-            CGFloat points = 0;
-            //CGFloat velocity = 0;
+            CGFloat points;
             if (_vertical)
             {
-                points = [panGesture translationInView:panGesture.view].x/5.0f;
-                //velocity = [panGesture velocityInView:panGesture.view].x;
+                points = [panGesture locationInView:self.currentItemView.superview].x - (self.currentItemView.superview.frame.size.width / 2.0);
             }
             else
             {
-                points = [panGesture translationInView:panGesture.view].y/5.0f;
-                //velocity = [panGesture velocityInView:panGesture.view].y;
+                points = [panGesture locationInView:self.currentItemView.superview].y - (self.currentItemView.superview.frame.size.height / 2.0);
             }
             CGRect frame = self.currentItemView.frame;
             if (_vertical)
-                frame.origin.x += points;
+                frame.origin.x = points;
             else
-                frame.origin.y += points;
+                frame.origin.y = points;
             self.currentItemView.frame = frame;
         }
     }
