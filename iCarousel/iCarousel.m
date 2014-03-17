@@ -2104,16 +2104,16 @@ NSComparisonResult compareViewDepth(UIView *view1, UIView *view2, iCarousel *sel
         default:
         {
             CGFloat points = 0;
-            CGFloat velocity = 0;
+            //CGFloat velocity = 0;
             if (_vertical)
             {
                 points = [panGesture translationInView:panGesture.view].x/5.0f;
-                velocity = [panGesture velocityInView:panGesture.view].x;
+                //velocity = [panGesture velocityInView:panGesture.view].x;
             }
             else
             {
                 points = [panGesture translationInView:panGesture.view].y/5.0f;
-                velocity = [panGesture velocityInView:panGesture.view].y;
+                //velocity = [panGesture velocityInView:panGesture.view].y;
             }
             CGRect frame = self.currentItemView.frame;
             if (_vertical)
