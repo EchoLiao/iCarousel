@@ -2098,7 +2098,7 @@ NSComparisonResult compareViewDepth(UIView *view1, UIView *view2, iCarousel *sel
             {
                 shouldClose = YES;
             }
-            [UIView animateWithDuration:1.0 animations:^{
+            [UIView animateWithDuration:0.25 animations:^{
                 self.currentItemView.frame = frame;
             }];
             _swipingToClose = NO;
