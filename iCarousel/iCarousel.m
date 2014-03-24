@@ -2078,36 +2078,69 @@ NSComparisonResult compareViewDepth(UIView *view1, UIView *view2, iCarousel *sel
         case UIGestureRecognizerStateEnded:
         {
             CGRect frame = self.currentItemView.frame;
-            BOOL shouldClose = NO;
-            CGFloat threshhold;
+
+            CGFloat position;
+            CGFloat velocity;
             if (_vertical)
             {
-                threshhold = fabsf(frame.origin.x) + (self.currentItemView.superview.frame.size.width / 2.0);
+                position = [panGesture locationInView:self.currentItemView.superview].x - (self.currentItemView.superview.frame.size.width / 2.0);
+                velocity = [panGesture velocityInView:self.currentItemView.superview].x;
             }
             else
             {
-                threshhold = fabsf(frame.origin.y) + (self.currentItemView.superview.frame.size.height / 2.0);
+                position = [panGesture locationInView:self.currentItemView.superview].y - (self.currentItemView.superview.frame.size.height / 2.0);
+                velocity = [panGesture velocityInView:self.currentItemView.superview].y;
             }
-            // Default transition, return to home.
-            if (_vertical)
-                frame.origin.x = 0;
-            else
-                frame.origin.y = 0;
             // Closing.
-            if (threshhold > frame.size.height)
+            if ((fabsf(position) > (frame.size.height * 0.33) || fabsf(velocity) > 500) && [self.delegate carousel:self shouldRemoveItemAtIndex:self.currentItemIndex])
             {
-                shouldClose = YES;
+                // Default transition, return to home.
+                if (_vertical)
+                {
+                    frame.origin.x = self.currentItemView.superview.frame.size.width;
+                    if (velocity < 0) {
+                        frame.origin.x *= -1;
+                    }
+                }
+                else
+                {
+                    frame.origin.y = self.currentItemView.superview.frame.size.height;
+                    if (velocity < 0) {
+                        frame.origin.y *= -1;
+                    }
+                }
+                [UIView animateWithDuration:0.5f
+                                 animations:^{
+                                     self.currentItemView.frame = frame;
+                                 }
+                                 completion:^(BOOL finished) {
+                                     if (finished) {
+                                         NSInteger i = self.currentItemIndex;
+                                         [self removeItemAtIndex:i animated:YES];
+                                         [self.delegate carousel:self didRemoveItemAtIndex:i];
+                                     }
+                                     else {
+                                         CGRect resetFrame = self.currentItemView.frame;
+                                         if (_vertical)
+                                             resetFrame.origin.x = 0;
+                                         else
+                                             resetFrame.origin.y = 0;
+                                         self.currentItemView.frame = resetFrame;
+                                     }
+                                 }];
             }
-            [UIView animateWithDuration:0.25 animations:^{
-                self.currentItemView.frame = frame;
-            }];
+            else
+            {
+                // Default transition, return to home.
+                if (_vertical)
+                    frame.origin.x = 0;
+                else
+                    frame.origin.y = 0;
+                [UIView animateWithDuration:0.25 animations:^{
+                    self.currentItemView.frame = frame;
+                }];
+            }
             _swipingToClose = NO;
-            if (shouldClose && [self.delegate carousel:self shouldRemoveItemAtIndex:self.currentItemIndex])
-            {
-                NSInteger i = self.currentItemIndex;
-                [self removeItemAtIndex:i animated:YES];
-                [self.delegate carousel:self didRemoveItemAtIndex:i];
-            }
             break;
         }
         case UIGestureRecognizerStateBegan:
@@ -2116,20 +2149,20 @@ NSComparisonResult compareViewDepth(UIView *view1, UIView *view2, iCarousel *sel
         }
         default:
         {
-            CGFloat points;
+            CGFloat position;
             if (_vertical)
             {
-                points = [panGesture locationInView:self.currentItemView.superview].x - (self.currentItemView.superview.frame.size.width / 2.0);
+                position = [panGesture locationInView:self.currentItemView.superview].x - (self.currentItemView.superview.frame.size.width / 2.0);
             }
             else
             {
-                points = [panGesture locationInView:self.currentItemView.superview].y - (self.currentItemView.superview.frame.size.height / 2.0);
+                position = [panGesture locationInView:self.currentItemView.superview].y - (self.currentItemView.superview.frame.size.height / 2.0);
             }
             CGRect frame = self.currentItemView.frame;
             if (_vertical)
-                frame.origin.x = points;
+                frame.origin.x = position;
             else
-                frame.origin.y = points;
+                frame.origin.y = position;
             self.currentItemView.frame = frame;
         }
     }
