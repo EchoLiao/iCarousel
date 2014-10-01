@@ -76,6 +76,8 @@
     
     //configure carousel
     self.carousel.type = iCarouselTypeCoverFlow2;
+    self.carousel.swipeToCloseEnabled = YES;
+
     self.navItem.title = @"CoverFlow2";
 }
 
@@ -302,6 +304,17 @@
 - (void)carouselCurrentItemIndexDidChange:(__unused iCarousel *)carousel
 {
     NSLog(@"Index: %@", @(self.carousel.currentItemIndex));
+}
+
+- (BOOL)carousel:(__unused iCarousel *)carousel shouldRemoveItemAtIndex:(NSInteger)index
+{
+    NSLog(@"Will remove item at index %d", index);
+    return YES;
+}
+
+- (void)carousel:(__unused iCarousel *)carousel didRemoveItemAtIndex:(NSInteger)index
+{
+    NSLog(@"Did remove item at index %d", index);
 }
 
 @end
