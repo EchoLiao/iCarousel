@@ -247,7 +247,7 @@
 - (CATransform3D)carousel:(__unused iCarousel *)carousel itemTransformForOffset:(CGFloat)offset baseTransform:(CATransform3D)transform
 {
     //implement 'flip3D' style carousel
-    transform = CATransform3DRotate(transform, M_PI / 8.0f, 0.0f, 1.0f, 0.0f);
+    transform = CATransform3DRotate(transform, (CGFloat)M_PI / 8.0f, 0.0f, 1.0f, 0.0f);
     return CATransform3DTranslate(transform, 0.0f, 0.0f, offset * self.carousel.itemWidth);
 }
 
@@ -314,6 +314,7 @@
 
 - (void)carousel:(__unused iCarousel *)carousel didRemoveItemAtIndex:(NSInteger)index
 {
+    [self.items removeObjectAtIndex:(NSUInteger)index];
     NSLog(@"Did remove item at index %d", index);
 }
 
