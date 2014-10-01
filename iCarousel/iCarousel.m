@@ -2128,7 +2128,7 @@ NSComparisonResult compareViewDepth(UIView *view1, UIView *view2, iCarousel *sel
                 velocity = [panGesture velocityInView:self.currentItemView.superview].y;
             }
             // Closing.
-            if ((fabsf(position) > (frame.size.height * 0.33) || fabsf(velocity) > 500) && [self.delegate carousel:self shouldRemoveItemAtIndex:self.currentItemIndex])
+            if ((fabsf(position) > (frame.size.height * 0.93) || fabsf(velocity) > 500) && [self.delegate carousel:self shouldRemoveItemAtIndex:self.currentItemIndex])
             {
                 // Default transition, return to home.
                 if (_vertical)
@@ -2145,9 +2145,9 @@ NSComparisonResult compareViewDepth(UIView *view1, UIView *view2, iCarousel *sel
                         frame.origin.y *= -1;
                     }
                 }
-                [UIView animateWithDuration:0.5f
+                [UIView animateWithDuration:0.2f
                                  animations:^{
-                                     self.currentItemView.frame = frame;
+//                                     self.currentItemView.frame = frame;
                                  }
                                  completion:^(BOOL finished) {
                                      if (finished) {
