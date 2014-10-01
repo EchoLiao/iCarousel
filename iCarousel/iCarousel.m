@@ -2127,8 +2127,12 @@ NSComparisonResult compareViewDepth(UIView *view1, UIView *view2, iCarousel *sel
                 position = [panGesture locationInView:self.currentItemView.superview].y - (self.currentItemView.superview.frame.size.height / 2.0);
                 velocity = [panGesture velocityInView:self.currentItemView.superview].y;
             }
-            // Closing.
-            if ((fabsf(position) > (frame.size.height * 0.93) || fabsf(velocity) > 500) && [self.delegate carousel:self shouldRemoveItemAtIndex:self.currentItemIndex])
+
+            BOOL doIt = NO;
+            if ([self.delegate respondsToSelector:@selector(carousel:shouldRemoveItemAtIndex:)]) {
+                doIt = [self.delegate carousel:self shouldRemoveItemAtIndex:self.currentItemIndex];
+            }
+            if (doIt && (fabsf(position) > (frame.size.height * 0.93) || fabsf(velocity) > 500))
             {
                 // Default transition, return to home.
                 if (_vertical)
@@ -2152,8 +2156,14 @@ NSComparisonResult compareViewDepth(UIView *view1, UIView *view2, iCarousel *sel
                                  completion:^(BOOL finished) {
                                      if (finished) {
                                          NSInteger i = self.currentItemIndex;
-                                         [self removeItemAtIndex:i animated:YES];
-                                         [self.delegate carousel:self didRemoveItemAtIndex:i];
+                                         @try {
+                                             [self removeItemAtIndex:i animated:YES];
+                                             if ([self.delegate respondsToSelector:@selector(carousel:didRemoveItemAtIndex:)]) {
+                                                 [self.delegate carousel:self didRemoveItemAtIndex:i];
+                                             }
+                                         } @catch (NSException *exception) {
+                                             NSLog(@"NAL %@", exception);
+                                         }
                                      }
                                      else {
                                          CGRect resetFrame = self.currentItemView.frame;
